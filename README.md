@@ -1,7 +1,8 @@
-# sensor-data-analysis
-End-to-end data analysis project using sensor data to identify anomalies and detect potential leaks.
+# Sensor-data-analysis
+End-to-end data analysis project using sensor data to identify anomalies, evaluate data quality, and assess potential operational and financial impact.
 
 ## SQL analysis
+
 This project includes SQL-based analysis to:
 - Identify energy consumption by zone
 - Detect peak consumption events
@@ -42,8 +43,27 @@ This project includes SQL-based analysis to:
 - Data cleaning was applied after initial exploration
 - Results may vary when using filtered data
 
+## Excel Analysis
+
+- Missing values were handled using average per sensor (imputation)
+- Created "data_quality" column (IMPUTED vs REAL)
+- Created "quality_flag" (1 = imputed, 0 = original)
+- Evaluated data quality by sensor and zone
+- Identified sensors with highest imputation rates
+- Analyzed consumption associated with imputed records
+
+## Data Model
+
+A star schema was implemented:
+
+- "fact_readings" - main measurements
+- "dim_sensor" - zone information
+- "dim_time" - time attributes (day, hour, shift)
+
+
 ## Tools
 - SQL (DBeaver)
+- Microsoft Excel
 - GIT & GitHub
   
 ## Status
