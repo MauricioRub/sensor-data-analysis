@@ -15,11 +15,13 @@ This project includes SQL-based analysis to:
  **Scope:** Exploratory + Diagnostic analysis
 
 ### Objectives
+
 - Identify abnormal consumption patterns
 - Detect potential anomalies in sensor data
 - Evaluate data quality issues
 
 ### Key Steps
+
 - Null value analysis
 - Duplicate detection
 - Distribution and range validation
@@ -29,6 +31,7 @@ This project includes SQL-based analysis to:
 - Anomaly classification using windows functions
 
 ### Key Findings
+
 - High consumption spikes (5x-6x above average) were detected
 - Temperature does not appear to drive anomalies
 - Pressure and flow do not show expected correlation
@@ -36,11 +39,13 @@ This project includes SQL-based analysis to:
 - Anomalies are likely caused by sensor inconsistencies rather than real consumption
 
 ### Data Quality Notes
+
 - Missing values were found in temperature and pressure
 - No duplicate records detected
 - Extreme values significantly impact analysis results
 
 ### Notes
+
 - Data cleaning was applied after initial exploration
 - Results may vary when using filtered data
 
@@ -139,4 +144,4 @@ The main takeaway is that data quality should be monitored as part of the analys
 - Microsoft Power BI
   
 ## Status
-Project in progress.
+Scaling & automation roadmap.
