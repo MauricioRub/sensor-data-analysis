@@ -1,23 +1,27 @@
-# Sensor-data-analysis
+# Sensor-Data-Analysis
 
-End-to-end data analysis project using sensor data to identify anomalies, evaluate data quality, and assess potential operational and financial impact.
+End-to-end analysis of sensor data to detect anomalies, evaluate data quality, and estimate potential financial impact.
 
-## SQL analysis
+The main goal of this project is to distinguish between real high-consumption events and false signals caused by data quality issues.
 
-This project includes SQL-based analysis to:
-- Identify energy consumption by zone
-- Detect peak consumption events
-- Analyze anomalies using window functions (LAG, ROW_NUMBER)
-- Explore dynamic anomaly detection using averages
+---
 
- ### SQL Exploratory + diagnostic analysis
+## Project Workflow
 
- **Scope:** Exploratory + Diagnostic analysis
+Raw Data → SQL Analysis → Data Cleaning (Excel) → Data Model → Power BI Dashboard → Insights
+
+---
+
+## SQL Analysis
+
+### Scope
+
+Exploratory and diagnostic analysis.
 
 ### Objectives
 
 - Identify abnormal consumption patterns
-- Detect potential anomalies in sensor data
+- Detect potential anomalies
 - Evaluate data quality issues
 
 ### Key Steps
@@ -25,123 +29,160 @@ This project includes SQL-based analysis to:
 - Null value analysis
 - Duplicate detection
 - Distribution and range validation
-- Identification of extreme consumption spikes
-- Contextual analysis using temperature, pressure, and flow
-- Data cleaning (filtered dataset)
-- Anomaly classification using windows functions
+- Detection of extreme consumption spikes
+- Context analysis using temperature, pressure, and flow
+- Data cleaning and filtering
+- Anomaly detection using window functions (LAG, ROW_NUMBER)
 
 ### Key Findings
 
-- High consumption spikes (5x-6x above average) were detected
-- Temperature does not appear to drive anomalies
-- Pressure and flow do not show expected correlation
-- A large portion of anomalies occurs in Zona_B
-- Anomalies are likely caused by sensor inconsistencies rather than real consumption
+- Consumption spikes up to 5-6x above average were detected
+- Temperature, pressure, and flow do not show consistent changes during these spikes
+- A large portion of anomalies is concentrated in Zona_B
+- The behavior of these spikes is not supported by temperature, pressure, or flow, which points to sensor inconsistencies.
 
 ### Data Quality Notes
 
-- Missing values were found in temperature and pressure
+- Missing values found in temperature and pressure
 - No duplicate records detected
-- Extreme values significantly impact analysis results
-
-### Notes
-
-- Data cleaning was applied after initial exploration
-- Results may vary when using filtered data
-
-## Excel Analysis
-
-- Missing values were handled using average per sensor (imputation)
-- Created "data_quality" column (IMPUTED vs REAL)
-- Created "quality_flag" (1 = imputed, 0 = original)
-- Evaluated data quality by sensor and zone
-- Identified sensors with highest imputation rates
-- Analyzed consumption associated with imputed records
-
-## Data Model
-
-A star schema was implemented:
-
-- "fact_readings" - main measurements
-- "dim_sensor" - zone information
-- "dim_time" - time attributes (day, hour, shift)
-  
-
-## Data Visualization & Business Intelligence
-
-
-Power BI was used to turn the cleaned data into interactive dashboards focused on data quality, anomaly detection, and financial impact.
-
-### KPI Monitoring
-
-Key metrics were created to track overall performance:
-
-- Total Consumption vs Clean Consumption
-- Noise Percentage (1.63%)
-- Cost of data issues and potential savings
+- Extreme values have a strong impact on average-based analysis
 
 ---
 
-### Anomaly Analysis
+## Excel Analysis
 
-- High consumption peaks were identified across sensors
-- Initial approaches using average and standard deviation were tested but did not perform well due to variability and extreme values
-- A more robust method based on Interquartile Range (IQR) was used to detect high peaks more accurately
-- Analysis by zone and shift shows the Night Shift as the most unstable period
-- Scatter analysis suggests weak correlation between consumption and pressure, supporting the idea of sensor inconsistencies
+![Excel Imputation](images/excel/consumption-imputed.png)
+![Excel Data Quality By Sensor](images/excel/quality-by-sensor.png)
+![Imputed Data By Zone](images/excel/quality-by-zone.png)
+
+
+- Missing values were handled using average per sensor (imputation)
+- Created a **data_quality** column (IMPUTED vs REAL)
+- Created a **quality_flag** (1 = imputed, 0 = original)
+- Evaluated data quality by sensor and zone
+- Identified sensors with higher imputation rates
+- Analyzed consumption linked to imputed records
+
+**Note:**
+
+Imputed data represents ~0.4% of the dataset. While low, imputation may reduce variability and should be considered when interpreting results.
+
+---
+
+## Data Model
+
+Star schema:
+
+- fact_readings - main measurements
+- dim_sensor - zone information
+- dim_time - time attributes (day, hour, shift)
+
+---
+
+## Power BI Analysis
+
+The cleaned dataset was used to build interactive dashboards focused on anomalies, data quality, and financial impact.
+
+### KPI Monitoring
+
+**Note:** Dashboard labels follow the original dataset language (Spanish).
+
+![Dashboard Overview](images/power-bi/financial-impact-overview.png)
+
+- Total Consumption vs Clean Consumption
+- Noise Percentage (1.63%)
+- Estimated cost impact
+
+---
+
+### Anomaly Detection Approach
+
+![Anomaly Detection](images/power-bi/anomalies-overview.png)
+
+
+Initial methods using average and standard deviation were tested but showed limitations due to sensitivity to extreme values.
+
+IQR was selected as a more robust approach to detect high consumption spikes, as it reduces the influence of extreme values when defining anomaly thresholds.
+
+This approach reduces the influence of extreme values when defining anomaly thresholds.
+
+---
+
+### Validation of Anomalies
+
+![Anomalies by Zone Filter](images/power-bi/zone-anomaly-detection.png)
+
+To verify whether spikes were real:
+
+- Consumption was compared against temperature, pressure, and flow
+- No consistent relationship was observed during peak events
+- High consumption without changes in related variables suggests these events are not physically supported
+
+This indicates that the detected anomalies are driven by sensor issues rather than actual consumption.
+
 ---
 
 ### Financial Impact
 
-- Estimated financial risk from anomalies (~$21.29k)
-- Simulated mitigation scenarios with potential savings (~$9.29k)
-- Waterfall chart used to show cost optimization
+![Financial Impact by Zone Filter](images/power-bi/zone-financial-impact.png)
+
+- Estimated financial risk: ~$21.29k
+- Potential savings after mitigation: ~$9.29k
+
+Dynamic parameters:
+
+- kWh price
+- Maintenance cost per sensor
+
+This allows simple scenario analysis based on different cost assumptions.
 
 ---
 
-### Interactive Features
+### Insights by Zone and Time
 
-- Dynamic slicers for:
-  - Kwh Price
-  - Maintenance Cost
-- Allows simple what-if analysis based on different cost assumptions
-
----
-
-### Dynamic Filtering
-
-The dashboard allows filtering by zone to focus the analysis.
-
-For example, when selecting Zona_A:
-
-- Financial impact changes noticeably
-- Different sensors appear as higher risk
-- Patterns become more localized
-
-This helps move from general insights to more targeted decisions.
+- Zona_B shows the highest concentration of anomalies
+- Night shift presents more unstable behavior
+- Filtering by zone reveals different risk patterns and sensor behavior
 
 ---
 
-## Final Conclusion
+## Business Implications
 
-This project shows how data quality issues can affect both analysis and decision-making.
+- Sensor inconsistencies can lead to overestimation of consumption
+- Data quality directly impacts financial analysis
+- Zona_B should be prioritized for inspection
+- Sensors with higher anomaly rates should be reviewed first
 
-Some anomalies initially looked like real consumption problems, but further analysis suggests they are mostly related to sensor inconsistencies.
+---
 
-By combining SQL, Excel, and Power BI, it was possible to:
+## Recommended Actions
 
-- Identify sensors with unreliable data
-- Estimate the financial impact of these issues
-- Explore possible improvements through scenario analysis
+- Inspect and recalibrate sensors in high-anomaly zones
+- Implement basic data validation rules for extreme values
+- Monitor anomalies by shift (focus on Night Shift)
+- Re-evaluate financial impact after corrective actions
 
-The main takeaway is that data quality should be monitored as part of the analysis, especially when it affects high-consumption records.
+---
+
+## Conclusion
+
+Some high-consumption events initially appeared critical, but further analysis shows that many are not supported by related variables.
+
+These results show that the detected anomalies are not supported by flow, pressure, or temperature patterns and are more consistent with data quality issues than real consumption.
+
+The project highlights the importance of validating data before making operational or financial decisions.
+
+---
 
 ## Tools
 
 - SQL (DBeaver)
 - Microsoft Excel
-- GIT & GitHub
-- Microsoft Power BI
-  
+- Power BI
+- Git & GitHub
+
+---
+
 ## Status
-Scaling & automation roadmap.
+
+Scaling and automation in progress.
